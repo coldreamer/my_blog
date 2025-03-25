@@ -1,0 +1,26 @@
+---
+title: 'js面试题-实现一个栈'
+date: '2018-04-02'
+tags: ['javascript', 'FE']
+draft: false
+---
+
+```javascript
+// 实现栈，有入栈出栈的方法，以及length属性
+
+class Stack {
+  constructor() {
+    this.items = []
+  }
+  push(item) {
+    this.items.push(item)
+  }
+  pop() {
+    return this.items.pop()
+  }
+  get length() {
+    return this.items.length
+  }
+}
+
+```

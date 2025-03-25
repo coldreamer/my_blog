@@ -41,6 +41,6 @@
     ".contentlayer/generated",
     ".contentlayer/generated/**/*.json",
     ".next/types/**/*.ts"
-  ],
+, "data/blog/javascript/31.手写promise A+规范.mdx", "data/blog/javascript/29.add函数柯里化.mdx", "data/blog/javascript/28.给fetch添加超时.mdx", "data/blog/javascript/25.实现一个栈.mdx", "data/blog/javascript/24.手写防抖.mdx", "data/blog/javascript/23.手动实现deepClone.mdx", "data/blog/javascript/22.手动实现instanceOf.mdx", "data/blog/javascript/21.任务队列的中断与恢复.mdx"  ],
   "exclude": ["node_modules"]
 }
