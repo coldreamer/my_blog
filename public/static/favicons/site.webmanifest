@@ -1,11 +1,11 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "Johan's Blog",
+  "short_name": "Johan's Blog",
   "icons": [
     {
-      "src": "/android-chrome-96x96.png",
+      "src": "/android-chrome-96x96.jpeg",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ],
   "theme_color": "#000000",
