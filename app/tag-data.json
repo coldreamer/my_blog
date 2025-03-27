@@ -1,5 +1,6 @@
 {
   "typescript": 1,
-  "fe": 43,
-  "javascript": 31
+  "fe": 45,
+  "browser": 4,
+  "javascript": 35
 }
