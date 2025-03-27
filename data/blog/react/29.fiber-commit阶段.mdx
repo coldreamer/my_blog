@@ -1,4 +1,11 @@
 
+---
+title: 'React中fiber-commit阶段详解'
+date: '2018-07-16'
+tags: ['react']
+draft: false
+---
+
 # 定义
 
 从`performSyncWorkOnRoot`中的`commitRoot`开始，就算是进入React的commit阶段了。`fiberRootNode会`作为传参。在`rootFiber.firstEffect`上保存了一条**需要执行副作用的Fiber节点的单向链表effectList，这些Fiber节点的updateQueue中保存了变化的props**。

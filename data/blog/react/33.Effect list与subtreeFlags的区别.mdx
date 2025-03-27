@@ -1,3 +1,10 @@
+---
+title: 'React中Effect list与subtreeFlags的区别'
+date: '2018-07-25'
+tags: ['react']
+draft: false
+---
+
 # Effect list的原理
 
 Fiber架构的早期版本中并没有使用 subtreeFlags，而是使用一种被称为Effet list的链表结构保存‘被标记副作用的 fiberNode’。 在completeWork中，如果 fiberNode存在副作用，就会插入Effect list中。 commit 阶段的三个子阶段只需要遍历Effect list并对 fiberNode执行'flags对应操作'。
