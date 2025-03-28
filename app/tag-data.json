@@ -2,6 +2,5 @@
   "typescript": 1,
   "fe": 45,
   "browser": 4,
-  "javascript": 35,
-  "react": 30
+  "javascript": 35
 }
