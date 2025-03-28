@@ -1,4 +1,6 @@
 {
+  "react": 35,
+  "vue": 8,
   "typescript": 1,
   "fe": 45,
   "browser": 4,

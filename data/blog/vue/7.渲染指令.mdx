@@ -1,3 +1,10 @@
+---
+title: 'vue中渲染指令'
+date: '2018-07-06'
+tags: ['vue']
+draft: false
+---
+
 # 背景
 
 在vue中控制渲染的模板主要通过渲染指令来实现，包括 `v-if`,`v-else`,`v-else-if`,`v-show`,`v-for`
@@ -15,10 +22,6 @@
 当 v-if 和 v-for 同时存在于一个元素上的时候，v-if 会首先被执行。这 意味着`v-if`的条件无法访问到`v-for`作用域内定义的变量别名:
 
 ```html
-    <!--
-    这会抛出一个错误，因为属性 todo 此时
-    没有在该实例上定义
-    -->
     <li v-for="todo in todos" v-if="!todo.isComplete">
     {{ todo.name }}
     </li>
