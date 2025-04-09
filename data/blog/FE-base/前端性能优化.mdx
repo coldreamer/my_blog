@@ -1,0 +1,139 @@
+---
+title: '前端性能定位、优化指标以及计算方法'
+date: '2024-04-03'
+tags: ['FE']
+draft: false
+---
+
+下面是关于前端性能定位、优化指标以及计算方法的一些信息：
+1.前端性能监控和埋点：通过在关键点上埋点，可以监控网页的加载时间、资源请求、错误等关键性能指标。常用的前端性能监控工具包括自定义的日志记录、第三方服务（如Google Analytics、Sentry等）和开源工具（如Fundebug、Tongji.js等）。此外，window.performance API提供了性能数据，可以通过它获取更详细的性能指标，如页面加载时间、资源加载时间等。
+
+2.性能分析工具：使用性能分析工具可以深入分析网站的性能瓶颈，并提供有针对性的优化建议。其中两个常用的工具是：
+- Performance：现代浏览器提供的内置性能分析工具，可通过浏览器开发者工具访问。它提供了时间轴记录、CPU、内存和网络分析等功能，帮助开发者找到性能瓶颈并进行优化。
+- Lighthouse：由Google开发的开源工具，可用于自动化测试网页性能，并提供综合的性能报告。它评估网页在多个方面的性能表现，并给出相应的优化建议。
+
+3.性能指标：性能指标是用于衡量网站性能的关键指标，常用的指标包括：
+- LCP（Largest Contentful Paint）：标识页面上最大的可见内容加载完成的时间，衡量用户可见内容的加载速度。
+- FCP（First Contentful Paint）：表示页面上第一个内容元素（如文字、图片）呈现的时间，标识页面加载的起点。
+- FID（First Input Delay）：测量从用户首次与页面交互（点击链接、按钮等）到浏览器实际响应该交互的时间。
+- CLS（Cumulative Layout Shift）：测量页面上元素布局的稳定性，即元素在页面加载过程中发生的意外移动的累积量。
+- TTFB（Time To First Byte）：表示从发起请求到接收到第一个字节的时间，衡量服务器响应速度。
+- TTI（Time To Interactive）：表示页面变得可交互的时间，即用户可以进行操作和与页面进行交互的时间点。
+- TBT（Total Blocking Time）：衡量页面在加载过程中存在的阻塞时间总和，即浏览器忙于处理 JavaScript 执行而导致无法响应用户输入的时间。
+
+这些指标可以通过性能分析工具或浏览器开发者工具来获得。优化这些指标有助于提升页面加载速度、响应性和用户体验。
+
+以下是这些指标的计算方法和示例代码：
+1. LCP（Largest Contentful Paint）：
+计算方法：监测到页面上的最大可见元素（如图片、视频等）加载完成的时间点。
+```javascript
+const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+    if (entry.entryType === 'largest-contentful-paint') {
+        console.log('LCP:', entry.renderTime || entry.loadTime);
+    }
+    }
+});
+observer.observe({ type: 'largest-contentful-paint', buffered: true });
+```
+
+2. FCP（First Contentful Paint）：
+计算方法：测量页面上第一个内容元素（如文字、图片）呈现的时间。
+```javascript
+const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+    if (entry.entryType === 'paint' && entry.name === 'first-contentful-paint') {
+        console.log('FCP:', entry.startTime);
+    }
+    }
+});
+observer.observe({ type: 'paint', buffered: true });
+```
+
+3. FID（First Input Delay）：
+计算方法：
+测量用户首次与页面交互（点击链接、按钮等）到浏览器实际响应该交互的时间。
+计算两个时间点之间的差值，即为 FID。
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+        if (entry.entryType === 'first-input' && entry.startTime < 5000) {
+        console.log('FID:', entry.processingStart - entry.startTime);
+        }
+    }
+    });
+    observer.observe({ type: 'first-input', buffered: true });
+});
+
+```
+
+4. CLS（Cumulative Layout Shift）：
+计算方法：监测到页面上元素布局发生变化时，记录布局变化的量。将所有布局变化的量累积起来，即为 CLS。
+```javascript
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.entryType === 'layout-shift') {
+      console.log('CLS:', entry.value);
+    }
+  }
+});
+observer.observe({ type: 'layout-shift', buffered: true });
+
+```
+
+5. TTFB（Time To First Byte）：
+计算方法：
+记录发起请求的时间点。
+监测到接收到第一个字节的时间点。
+计算两个时间点之间的差值，即为 TTFB。
+```javascript
+const startTime = performance.now();
+fetch('https://example.com')
+  .then((response) => {
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+    console.log('TTFB:', duration);
+    return response;
+  });
+
+```
+
+6. TTI（Time To Interactive）：
+计算方法：测量页面变得可交互的时间，即用户可以进行操作和与页面进行交互的时间点。
+监测到页面上的关键元素加载完成的时间点。
+监测到所有关键脚本的执行完成的时间点。
+监测到用户首次与页面交互的时间点。
+计算这些时间点之间的最大值，即为 TTI。
+```javascript
+function calculateTTI() {
+    const longTasks = performance.getEntriesByType('longtask');
+    const blockingTime = longTasks.reduce((total, task) => total + task.duration, 0);
+    console.log('TTI:', blockingTime);
+}
+
+window.addEventListener('load', () => {
+    setTimeout(calculateTTI, 5000);
+});
+
+```
+
+7. TBT（Total Blocking Time）：
+计算方法：衡量页面在加载过程中存在的阻塞时间总和，即浏览器忙于处理 JavaScript 执行而导致无法响应用户输入的时间。
+监测到页面加载过程中 JavaScript 阻塞用户输入的时间段。
+将所有阻塞时间段的持续时间累积起来，即为 TBT。
+```javascript
+function calculateTBT() {
+    const longTasks = performance.getEntriesByType('longtask');
+    const blockingTime = longTasks.reduce((total, task) => total + task.duration, 0);
+    console.log('TBT:', blockingTime);
+}
+
+window.addEventListener('load', () => {
+    setTimeout(calculateTBT, 5000);
+});
+
+```
+上述示例代码可以在页面中嵌入并运行，通过浏览器的开发者工具或控制台查看相应的性能指标输出。注意，这些示例代码只是基本的计算方法，实际使用时可能需要根据具体的情况进行调整和扩展。此外，为了准确测量性能指标，建议在真实用户环境中进行测试和监测。
+
+也可以使用 web-vitals 库可以更方便地获取和处理性能指标
