@@ -1,0 +1,86 @@
+---
+title: 'RAF 和 RIC 是什么'
+date: '2025-04-01'
+tags: ['FE']
+draft: false
+---
+requestAnimationFrame： 
+告诉浏览器在下次重绘之前执行传入的回调函数(通常是操纵 dom，更新动画的函数)；由于是每帧执行一次，那结果就是每秒的执行次数与浏览器屏幕刷新次数一样，通常是每秒 60 次。
+
+requestIdleCallback：: 
+会在浏览器空闲时间执行回调，也就是允许开发人员在主事件循环中执行低优先级任务，而不影响一些延迟关键事件。如果有多个回调，会按照先进先出原则执行，但是当传入了 timeout，为了避免超时，有可能会打乱这个顺序
+
+**requestAnimationFrame**
+当使用 requestAnimationFrame 实现动画时，通常需要更新 DOM 元素的属性来创建平滑的动画效果。以下是一个使用 requestAnimationFrame 的简单示例代码：
+```javascript
+function animate() {
+  const element = document.getElementById('myElement');
+  const position = parseInt(element.style.left) || 0;
+  const speed = 2;
+
+  // 更新元素位置
+  element.style.left = position + speed + 'px';
+
+  // 检查是否到达目标位置
+  if (position < 200) {
+    // 请求下一帧动画
+    requestAnimationFrame(animate);
+  }
+}
+
+// 开始执行动画
+requestAnimationFrame(animate);
+```
+在上面的代码中，animate 函数用于执行动画操作。在每一帧动画中，我们通过获取元素的当前位置，增加一个速度值，然后更新元素的位置。在这个例子中，我们通过改变 left 属性来实现水平移动的动画效果。
+
+在每一帧动画结束后，我们检查是否到达了目标位置（这里假设目标位置为左侧 200px 的位置），如果没有到达目标位置，我们再次请求下一帧动画，从而创建连续的动画效果。
+
+通过使用 requestAnimationFrame，可以实现流畅的动画效果，并且能够与浏览器的重绘周期同步，避免了过度绘制的问题。这样可以提供更好的性能和用户体验。
+
+**requestIdleCallback**
+```javascript
+function processIdleTasks(deadline) {
+  while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && tasks.length > 0) {
+    // 执行低优先级任务
+    const task = tasks.shift();
+    task();
+  }
+
+  if (tasks.length > 0) {
+    // 如果还有任务未完成，继续请求下一次 idle callback
+    requestIdleCallback(processIdleTasks);
+  }
+}
+
+// 添加低优先级任务
+function addTask(task) {
+  tasks.push(task);
+
+  // 如果当前没有请求进行中，则请求下一次 idle callback
+  if (tasks.length === 1) {
+    requestIdleCallback(processIdleTasks);
+  }
+}
+
+// 低优先级任务列表
+const tasks = [];
+
+// 添加低优先级任务
+addTask(function() {
+  console.log('Task 1');
+});
+
+addTask(function() {
+  console.log('Task 2');
+});
+
+addTask(function() {
+  console.log('Task 3');
+});
+
+```
+在上面的代码中，requestIdleCallback 用于执行低优先级任务。首先定义了一个 processIdleTasks 函数，它会在浏览器空闲时间内执行任务。在函数内部，通过 deadline.timeRemaining() 方法判断是否还有空闲时间可用，并且任务队列不为空时，循环执行低优先级任务。如果还有未完成的任务，会继续请求下一次 idle callback。
+
+然后，通过 addTask 函数向低优先级任务列表中添加任务。当添加任务时，如果当前没有请求进行中，则请求下一次 idle callback 来执行任务。
+
+通过使用 requestIdleCallback，可以在浏览器空闲时间内执行低优先级任务，而不会影响一些延迟关键事件的执行。这有助于提高应用程序的性能和响应能力。
