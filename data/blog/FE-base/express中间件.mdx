@@ -1,0 +1,78 @@
+---
+title: 'express中间件要点'
+date: '2024-04-03'
+tags: ['FE']
+draft: false
+---
+
+express中间件要点:
+在使用Express中间件时，我们可以将中间件分为以下几类：
+
+1. 内置中间件：
+   Express自带了一些常用的中间件，如express.json()和express.urlencoded()，用于解析请求体中的JSON数据和URL编码的数据。
+
+2. 第三方中间件：
+   这些中间件是由社区开发并发布到npm上的，可以通过npm安装并在Express应用中使用。例如，morgan用于日志记录，cors用于处理跨域请求，body-parser用于解析请求体等。
+
+3. 自定义中间件：
+   开发者可以根据需要编写自己的中间件函数，以实现特定的功能。自定义中间件可以在请求处理的各个阶段进行操作，如验证用户身份、处理错误、记录日志等。
+
+使用Express中间件时需要注意以下几点：
+
+1. 中间件的顺序：
+   中间件的执行顺序非常重要。Express按照中间件的定义顺序依次执行，因此需要确保中间件的顺序正确。例如，解析请求体的中间件应在处理请求数据的中间件之前定义。
+
+2. 错误处理：
+   错误处理中间件应放在所有其他中间件之后定义。错误处理中间件有四个参数：err, req, res, next，用于捕获和处理应用中的错误。
+
+3. 性能考虑：
+   使用中间件时要注意性能问题，尽量避免在每个请求中执行耗时的操作。可以通过条件判断来控制中间件的执行，或者将耗时操作放在异步函数中执行。
+
+4. 安全性：
+   在使用第三方中间件时，要注意其安全性，确保中间件没有已知的漏洞或安全问题。定期更新中间件版本，以获取最新的安全补丁。
+
+以下是一个简单的Express中间件示例：
+```javascript
+const express = require('express');
+const app = express();
+
+// 内置中间件
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 第三方中间件
+const morgan = require('morgan');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
+app.use(morgan('dev'));
+app.use(cors());
+app.use(bodyParser.json());
+
+// 自定义中间件
+function customMiddleware(req, res, next) {
+  console.log('自定义中间件被调用');
+  next();
+}
+
+app.use(customMiddleware);
+
+// 错误误处理中间件
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+  next();
+});
+
+// 示例路由
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`服务器正在运行在端口 ${PORT}`);
+});
+```
+
+
